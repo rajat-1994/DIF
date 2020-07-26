@@ -1,0 +1,6 @@
+numpy==1.18.4
+pandas==1.0.3
+numba==0.50.1
+tensorflow==2.2.0
+dash==1.13.3
+opencv-python
