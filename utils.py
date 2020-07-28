@@ -57,7 +57,7 @@ def read_files(img_dir):
         filenames (list): list of paths of all the images in `img_dir`
     """
     filenames = []
-    for dirpath, _, filename in os.walk(img_dir):
+    for dirpath, _, filename in os.walk(str(img_dir)):
         for file_ in filename:
             if os.path.splitext(file_)[-1] in (".jpg", ".png", ".jpeg"):
                 filenames.append(os.path.join(dirpath, file_))
