@@ -1,14 +1,14 @@
 import dash
+import base64
 import numpy as np
 import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+from dash.dependencies import Input, Output, State
 from model_utils import Embedding
 from utils import similarity_matrix, sort_matrix
 from utils import read_files, new_df, save_df
-import base64
 
 external_stylesheets = [
     'https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.DARKLY]
@@ -24,16 +24,14 @@ top_card = dbc.Card(
         dbc.CardImg(id='img1', top=True),
         dbc.CardBody([
             dbc.Row(html.P(id='filename-1'), justify="center"),
-            dbc.Button('Delete',
-                       outline=True,
+            dbc.Button('DELETE',
                        color="danger",
                        size='lg',
                        id="button1",
-                       n_clicks=0,
-                       className="mr-1")
+                       n_clicks=0,)
         ]),
     ],
-    style={"width": "50rem"},
+    style={"width": "auto"},
 )
 
 bottom_card = dbc.Card(
@@ -41,16 +39,14 @@ bottom_card = dbc.Card(
         dbc.CardImg(id='img2', top=True),
         dbc.CardBody([
             dbc.Row(html.P(id='filename-2'), justify="center"),
-            dbc.Button('Delete',
-                       outline=True,
+            dbc.Button('DELETE',
                        color="danger",
                        size='lg',
                        id="button2",
-                       n_clicks=0,
-                       className="mr-1")
+                       n_clicks=0,)
         ]),
     ],
-    style={"width": "50rem"},
+    style={"width": "auto"},
 )
 
 app.layout = html.Div(children=[
@@ -86,8 +82,6 @@ app.layout = html.Div(children=[
     )
 ])
 
-print("session:", SESSION_ID)
-
 
 @ app.callback([Output('img1', 'src'),
                 Output('img2', 'src'),
@@ -114,10 +108,10 @@ def update_session(index_pair, files_df, changed_id):
     global SESSION_ID
     idx1, idx2 = index_pair[SESSION_ID]
     if 'button1' in changed_id:
-        files_df.iloc[idx1] = 1
+        files_df.is_deleted.iloc[idx1] = 1
         SESSION_ID += 1
     elif 'button2' in changed_id:
-        files_df.iloc[idx2] = 1
+        files_df.is_deleted.iloc[idx2] = 1
         SESSION_ID += 1
 
 
