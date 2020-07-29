@@ -4,3 +4,4 @@ numba==0.50.1
 tensorflow==2.2.0
 dash==1.13.3
 opencv-python
+dash-bootstrap-components==0.10.3

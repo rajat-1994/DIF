@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 from numba import njit
+import pandas as pd
 
 
 def similarity_matrix(mat1, mat2):
@@ -69,3 +70,14 @@ def load_image(path, shape=(224, 224)):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, shape)
     return image
+
+
+def new_df(files):
+    df = pd.DataFrame()
+    df['files'] = files
+    df['is_deleted'] = 0
+    return df
+
+
+def save_df(df, path='./files.csv'):
+    df.to_csv(path, index=False)

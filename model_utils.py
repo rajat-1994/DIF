@@ -9,8 +9,7 @@ from utils import load_image
 
 
 class Embedding():
-    def __init__(self, files, batch_size=32, input_shape=(224, 224)):
-        self.files = files
+    def __init__(self,  batch_size=32, input_shape=(224, 224)):
         self.batch_size = batch_size
         self.input_shape = input_shape
         self.model = self.load_model()
@@ -34,7 +33,8 @@ class Embedding():
 
         return model
 
-    def embeddings(self):
+    def embeddings(self, files):
+        self.files = files
         if self.device:
             return self.predict_on_batch()
         return self.predict_on_cpu()

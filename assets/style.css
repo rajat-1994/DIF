@@ -1,0 +1,43 @@
+
+#headline{
+    text-align : center;
+    color : black;
+    background-color: #f2f2f2;
+    font-size: 60px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+    
+#input_path_div {
+    text-align: center;
+}
+
+#input_path {
+    position: relative;
+    width:25%;
+}
+#loader ,#loading-div{
+    text-align: center;
+    position: relative;
+}
+
+#loading-div{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#display_layout{
+    position: relative;
+    text-align:center;
+    padding:10px;
+}
+
+#button1,#button2{
+    width: 120px;
+}
+
+#filename-1,#filename-2{
+    max-width: 150px;
+    text-align:center;
+    position: relative;
+    font-size:15px;
+}
