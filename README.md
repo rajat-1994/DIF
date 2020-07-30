@@ -43,4 +43,4 @@ df = df[df.is_deleted==0]
 # Reference
 [(top)](#table-of-contents)
 
-*[fastai Widgets](https://github.com/fastai/fastai)
+* [fastai Widgets](https://github.com/fastai/fastai)
