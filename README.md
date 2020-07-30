@@ -1,4 +1,4 @@
-
+![Banner](https://github.com/rajat-1994/DIF/tree/master/assets/banner.png)
 # Duplicate Image Finder
 
 
