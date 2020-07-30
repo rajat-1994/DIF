@@ -1,6 +1,9 @@
-<img src="https://github.com/rajat-1994/DIF/tree/master/assets/banner.png" height="600" width="1050"/>
-# Duplicate Image Finder
+<img src="https://github.com/rajat-1994/DIF/blob/master/assets/banner.png" height="650" width="1280"/>
 
+# Duplicate Image Finder
+When creating image dataset for deep learning project, there are high changes that the dataset contains multiple duplicate images.\
+This standalone tool will help in finding and removing those duplicate images using a simple interface. And if you are a developer
+ you can easily customize the code according to your need.
 
 
 # Table of contents
