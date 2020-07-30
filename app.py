@@ -19,35 +19,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.title = "DIF"
 
-top_card = dbc.Card(
-    [
-        dbc.CardImg(id='img1', top=True),
-        dbc.CardBody([
-            dbc.Row(html.P(id='filename-1'), justify="center"),
-            dbc.Button('DELETE',
-                       color="danger",
-                       size='lg',
-                       id="button1",
-                       n_clicks=0,)
-        ]),
-    ],
-    style={"width": "auto"},
-)
-
-bottom_card = dbc.Card(
-    [
-        dbc.CardImg(id='img2', top=True),
-        dbc.CardBody([
-            dbc.Row(html.P(id='filename-2'), justify="center"),
-            dbc.Button('DELETE',
-                       color="danger",
-                       size='lg',
-                       id="button2",
-                       n_clicks=0,)
-        ]),
-    ],
-    style={"width": "auto"},
-)
 
 app.layout = html.Div(children=[
     html.Div(children="Duplicate Image Finder ",
@@ -73,9 +44,13 @@ app.layout = html.Div(children=[
     ),
 
     html.Br(),
+    # html.Div([dbc.Button("Start", color="success", n_clicks=0,
+    #                      size='lg', id='start-button'),
+    #           ],
+    #          id='start-row'),
     dbc.Row(
-        [dbc.Col(top_card, width=4),
-         dbc.Col(bottom_card, width=4)
+        [dbc.Col(id='col-card-1', width=4),
+         dbc.Col(id='col-card-2', width=4)
          ],
         justify="center",
         id='display_layout'
@@ -83,25 +58,69 @@ app.layout = html.Div(children=[
 ])
 
 
-@ app.callback([Output('img1', 'src'),
-                Output('img2', 'src'),
-                Output('filename-1', 'children'),
-                Output('filename-2', 'children')],
-               [Input('button1', 'n_clicks'),
-                Input('button2', 'n_clicks')],)
-def display_image(n_clicks1, n_clicks2):
-    global SESSION_ID
+# @ app.callback([Output('start-row', 'children'), ],
+#                [Input('loading-div', 'children')],)
+# def remove_start_buttom(children):
+#     print("remove clicks", children)
+#     return dbc.Button("Start", color="success", n_clicks=0,
+#                       size='lg', id='start-button')
 
+
+@ app.callback([Output('col-card-1', 'children'),
+                Output('col-card-2', 'children'), ],
+               [Input('loading-div', 'children'),
+                Input('display_layout', 'children')])
+def display_image(children, dl_children):
+    global SESSION_ID
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    print(f"changed id : {changed_id}")
-    print(SESSION_ID)
-    index_pair = np.load('index_pair.npy')
-    files_df = pd.read_csv('./files.csv')
-    children1, children2 = [], []
-    update_session(index_pair, files_df, changed_id)
-    children1, children2, f1, f2 = images_component(index_pair, files_df)
-    save_df(files_df)
-    return children1, children2, f1, f2
+    print("changed_id", changed_id)
+    print("clicks", children)
+    print("dl child", dl_children)
+    if children != []:
+        # Reading files
+        index_pair = np.load('index_pair.npy')
+        files_path = pd.read_csv('./files.csv')
+        # Checking which button is clicked and update Session id
+        update_session(index_pair, files_path, changed_id)
+        # Reading images and filename
+        image1, image2, filename1, filename2 = encoded_images(
+            index_pair, files_path)
+        # Saving updated files datafrmae
+        save_df(files_path)
+
+        top_card = dbc.Card(
+            [
+                dbc.CardImg(src=image1, id='img1', top=True),
+                dbc.CardBody([
+                    dbc.Row(html.P(filename1, id='filename-1'),
+                            justify="center"),
+                    dbc.Button('DELETE',
+                               color="danger",
+                               size='lg',
+                               id="button1",
+                               n_clicks=0,)
+                ]),
+            ],
+            style={"width": "auto"},
+        )
+
+        bottom_card = dbc.Card(
+            [
+                dbc.CardImg(src=image2, id='img2', top=True),
+                dbc.CardBody([
+                    dbc.Row(html.P(filename2, id='filename-2'),
+                            justify="center"),
+                    dbc.Button('DELETE',
+                               color="danger",
+                               size='lg',
+                               id="button2",
+                               n_clicks=0,)
+                ]),
+            ],
+            style={"width": "auto"},
+        )
+        return top_card, bottom_card
+    return "", ""
 
 
 def update_session(index_pair, files_df, changed_id):
@@ -115,18 +134,24 @@ def update_session(index_pair, files_df, changed_id):
         SESSION_ID += 1
 
 
-def images_component(index_pair, files_df):
+def encoded_images(index_pair, files_df):
     global SESSION_ID
-    children1, children2 = '', ''
     idx1, idx2 = index_pair[SESSION_ID]
     if files_df.is_deleted.iloc[idx1] == 0 and files_df.is_deleted.iloc[idx2] == 0:
         file1, file2 = files_df.files.iloc[idx1], files_df.files.iloc[idx2]
+        # Reading Images and encoding them as base64
         enc_img1 = base64.b64encode(open(file1, 'rb').read())
         enc_img2 = base64.b64encode(open(file2, 'rb').read())
-        return f"data:image/png;base64,{enc_img1.decode()}", f"data:image/png;base64,{enc_img2.decode()}", file1.split('/')[-1], file2.split('/')[-1]
+        enc_images = [
+            f"data:image/png;base64,{enc_img1.decode()}",
+            f"data:image/png;base64,{enc_img2.decode()}"]
+        # Sending file names
+        filenames = [file1.split('/')[-1], file2.split('/')[-1]]
+        return enc_images+filenames
     else:
         SESSION_ID += 1
-    return children1, children2, '', ''
+        return encoded_images(index_pair, files_df)
+    return ['', '', '', '']
 
 
 @ app.callback(Output('loading-div', 'children'),
